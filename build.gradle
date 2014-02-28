@@ -1,0 +1,34 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.5
+version = '0.1'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url 'http://repository.codehaus.org'
+    }
+}
+
+dependencies {
+
+    // ------------------------------------------------------------
+    // Core client
+    compile 'org.codehaus.groovy:groovy-all:2.2.0'
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
+
+    // ------------------------------------------------------------
+    // Test specifics
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.gwebmock:gwebmock:0.1'
+
+    // ------------------------------------------------------------
+    // Misc. infrastructure
+
+    //compile "com.typesafe:config:1.0.2"
+    compile 'joda-time:joda-time:2.2'
+}
