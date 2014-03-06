@@ -9,9 +9,7 @@ import static org.junit.Assert.assertThat
 @Mixin(MockAsyncHTTPBuilder)
 class ItemsTest extends GroovyTestCase {
 
-
     Items items
-    //def mock
 
     void setUp() {
         super.setUp()
