@@ -57,7 +57,7 @@ class ItemsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_items_response.json' ).text)
         stubApiGet(path: testPath, returns: response)
         mockHTTP.use {
-            def items = items.get_items(limit: 5)
+            items.get_items(limit: 5)
         }
         assertPathWasRequested(testPath)
     }
