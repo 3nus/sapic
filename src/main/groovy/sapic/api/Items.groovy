@@ -1,5 +1,7 @@
 package sapic.api
 
+import sapic.SapiClient
+
 // ------------
 // Implements: /iii/sierra-api/v0.5/items
 // Docs: http://sandbox.iii.com/docs/Default.htm#retrieveItem.htm%3FTocPath%3DSierra%20API%20Reference%7COperations%7C_____2
@@ -17,10 +19,11 @@ class Items extends APIBase {
     // Todo: implement search and filter parameters in APIBase
     def get_items(Map args=[:]) {
         def path = 'items'
-        return new sapic.resources.Items().fromResponse(this.get(path: path, query: buildQueryParameters(args)))
+        return new sapic.resources.Items().fromResponse(SapiClient.getInstance().get(path: path, query: buildQueryParameters(args)))
     }
 
-
+    /*
     def get_item(id) {}
+    */
 
 }

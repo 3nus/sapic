@@ -35,20 +35,20 @@ class SapiClient {
     //      returns: JSON object
     def get(Map args=[:]) {
         def query = args.query
-        // inject the apiKey into the query params
-        query.apiKey = args.apiKey ?: this.apiKey
 
+        // if present, inject the apiKey into the query params
+        (this.apiKey) ? query.apiKey = this.apiKey : null
         def path = getPathForVerb(verb: 'GET', path: args.path, query: query)
 
+        // make the http request
         def request = this.httpClient.get(path: path, query: query) {resp, json ->
             assert resp.status == 200
-            return json
+            json
         }
-
         // a bit of the async voodoo. Wait for the request to complete,
         // and return the json per the closure's return
         while ( ! request.done  ) { Thread.sleep 250 }
-        return request.get()
+        request.get()
     }
 
     // -------

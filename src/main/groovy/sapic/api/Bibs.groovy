@@ -18,11 +18,13 @@ class Bibs extends APIBase {
     // Todo: implement search and filter parameters in APIBase
     def get_bibs(Map args=[:]) {
         def path = 'bibs'
-        return new sapic.resources.Bibs().fromResponse(SapiClient.getInstance().get(path: path, query: buildQueryParameters(args)))
+        return new sapic.resources.Bibs().fromResponse(SapiClient.instance.get(path: path, query: buildQueryParameters(args)))
     }
 
+    /*
     def get_bib(id) {}
 
     def get_marc(id) {}
+    */
 
 }

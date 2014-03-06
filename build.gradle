@@ -2,9 +2,19 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'git-dependencies'
 
 sourceCompatibility = 1.5
 version = '0.1'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
+    }
+}
 
 repositories {
     mavenCentral()
@@ -25,10 +35,29 @@ dependencies {
     // Test specifics
     testCompile 'junit:junit:4.11'
     testCompile 'org.gwebmock:gwebmock:0.1'
+    // enable this once it's publicly available
+    //testCompile('org.gwebmock:gwebmock:0.1').ext.git = 'https://github.com/3nus/groovy-webmock.git'
+
 
     // ------------------------------------------------------------
     // Misc. infrastructure
 
     //compile "com.typesafe:config:1.0.2"
     compile 'joda-time:joda-time:2.2'
+}
+
+test {
+    // listen to events in the test execution lifecycle
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
+
+    /*
+    // enable this for printing out stdout/err
+
+    // listen to standard out and standard error of the test JVM(s)
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+    }
+    */
 }
