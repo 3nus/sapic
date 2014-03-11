@@ -4,11 +4,9 @@ import groovy.util.logging.Log
 import groovyx.net.http.AsyncHTTPBuilder
 import groovyx.net.http.URIBuilder
 import sapic.config.Configuration
-import sapic.config.ConfigurationException
 
 import static groovyx.net.http.ContentType.JSON
 
-//@Log(category='sapic.SapiClient')
 @Log
 @Mixin([sapic.api.Bibs, sapic.api.Items])
 @Singleton(lazy=true)
@@ -20,12 +18,29 @@ class SapiClient {
     def config = Configuration.instance
     def httpClient = new AsyncHTTPBuilder(poolSize: 20, uri: this.config.api.host, contentType: JSON)
 
-    def loadConfig(URL customSettings) {
-        config = config.reload(customSettings)
+    // -------------
+    // Configuration
+    // -------------
+
+    // ---------------------------
+    // load specified environment configuration from default config
+    //      accepts: String
+    def loadConfig(String environment) {
+        config.loadEnvironment(environment)
     }
 
+    // ---------------------------
+    // load configuration from custom config file (as url)
+    //      accepts: String
+    def loadConfig(URL customSettings) {
+        config.reload(customSettings)
+    }
+
+    // ---------------------------
+    // load specified environment configuration from custom config file
+    //      accepts: String
     def loadConfig(String environment, URL customSettings) {
-        config = config.reload(environment, customSettings)
+        config.reload(environment, customSettings)
     }
 
     // -------------
@@ -37,14 +52,12 @@ class SapiClient {
     //      accepts: Map [path: path, query:query]
     //      returns: JSON object
     def get(Map args=[:]) {
-        def query = args.query
 
-        this.config.api.key ?: { throw new ConfigurationException("API key not found, is the SIERRA_API_KEY env var set?") }
-        //(this.apiKey) ? query.apiKey = this.apiKey : null
-        def path = getPathForVerb(verb: 'GET', path: args.path, query: query)
+        def query = args.query
+        def uri = buildURI(verb: 'GET', path: args.path, query: query)
 
         // make the http request
-        def request = this.httpClient.get(path: path, query: query) {resp, json ->
+        def request = this.httpClient.get(path: uri.getPath(), query: uri.getQuery()) {resp, json ->
             assert resp.status == 200
             json
         }
@@ -59,36 +72,22 @@ class SapiClient {
     // -------
 
     // ---------------------------
-    // handy path builder and URI logger
-    //      accepts: Map [verb: verb, path: path, query: query]
-    //      returns: String uriPath
-    def getPathForVerb(Map args=[:]) {
-        def uri = buildURI(path: args.path, query: args.query)
-        def uriPath = uri.getPath()
-        log.info "${args.verb}-ing ${uri.toString()}"
-        return uriPath
-    }
-
-    // ---------------------------
     // builds URI object from args
     //      accepts: Map [path: path, query:query]
     //      returns: URI object
     def buildURI(Map args=[:]) {
-        /*
-        def uri = new URIBuilder(this.apiHost).with {
-            scheme = this.apiHTTPScheme
-            path = "${this.apiPathRoot}/${this.apiVersion}/${args.path}"
-            query = args.query
-            return it
-        }
-         */
+
+        def queryParams = args.query
+        queryParams.apiKey = this.config.api.key
+
         def uri = new URIBuilder(this.config.api.host).with {
             scheme = this.config.api.scheme
             port = this.config.api.port
             path = "${this.config.api.rootPath}/${this.config.api.version}/${args.path}"
-            query = args.query
+            query = queryParams
             return it
         }
+        log.info "${args.verb}-ing ${uri.toString()}"
         return uri
     }
 

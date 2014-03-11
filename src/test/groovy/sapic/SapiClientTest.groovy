@@ -4,7 +4,17 @@ import groovy.json.JsonSlurper
 import gwebmock.MockAsyncHTTPBuilder
 
 import static org.hamcrest.CoreMatchers.instanceOf
+import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
+
+class SapiClientInstanceTest extends GroovyTestCase {
+
+    void testNewObject() {
+        def client = SapiClient.instance
+        assertEquals(SapiClient.class, client.class)
+    }
+
+}
 
 @Mixin(MockAsyncHTTPBuilder)
 class SapiClientDefaultConfigTest extends GroovyTestCase {
@@ -47,7 +57,6 @@ class SapiClientDefaultConfigTest extends GroovyTestCase {
 
 }
 
-@Mixin(MockAsyncHTTPBuilder)
 class SapiClientEnvConfigTest extends GroovyTestCase {
 
     def client
@@ -55,11 +64,11 @@ class SapiClientEnvConfigTest extends GroovyTestCase {
     void setUp() {
         super.setUp()
         client = SapiClient.instance
-        client.config.reload('local')
+        client.loadConfig('local')
     }
 
     void tearDown() {
-
+        client.config.loadDefaultConfig()
     }
 
     void testDefaultConfigHost() {
@@ -80,7 +89,38 @@ class SapiClientEnvConfigTest extends GroovyTestCase {
 
 }
 
-@Mixin(MockAsyncHTTPBuilder)
+class SapiClientCustomConfigTest extends GroovyTestCase {
+
+    def client
+
+    void setUp() {
+        super.setUp()
+        client = SapiClient.instance
+        client.loadConfig(this.getClass().getResource('/CustomSettingsOverwrite.groovy'))
+    }
+
+    void tearDown() {
+        client.config.loadDefaultConfig()
+    }
+
+    void testDefaultConfigHost() {
+        assertEquals('http://super-sierra-install.com', client.config.api.host)
+    }
+
+    void testDefaultConfigRootPath() {
+        assertEquals('/iii/sierra-api', client.config.api.rootPath)
+    }
+
+    void testDefaultConfigVersion() {
+        assertEquals('v42', client.config.api.version)
+    }
+
+    void testDefaultConfigKey() {
+        assertEquals('sekrit', client.config.api.key)
+    }
+
+}
+
 class SapiClientEnvCustomConfigTest extends GroovyTestCase {
 
     def client
@@ -88,11 +128,11 @@ class SapiClientEnvCustomConfigTest extends GroovyTestCase {
     void setUp() {
         super.setUp()
         client = SapiClient.instance
-        client.config.reload('superSierraInstall', this.getClass().getResource('/CustomSettings.groovy'))
+        client.loadConfig('superSierraInstall', this.getClass().getResource('/CustomSettings.groovy'))
     }
 
     void tearDown() {
-        client.config.reload()
+        client.config.loadDefaultConfig()
     }
 
     void testDefaultConfigHost() {

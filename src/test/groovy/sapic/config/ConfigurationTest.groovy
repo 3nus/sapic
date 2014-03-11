@@ -41,11 +41,11 @@ class ConfigurationWithEnvTest extends GroovyTestCase {
     void setUp() {
         super.setUp()
         config = new Configuration()
-        config.reload('sandbox')
+        config.loadEnvironment('sandbox')
     }
 
     void tearDown() {
-        config.reload()
+        config.loadDefaultConfig()
     }
 
     void testConfigurationApiHostViaEnvironment() {

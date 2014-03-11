@@ -21,33 +21,27 @@ class APIConfig {
 @Singleton(lazy=true)
 class Configuration {
 
-    def environment
+    String environment
     def api = new APIConfig()
 
-    def Configuration() {
-        setEnvironment()
-        def settings = loadSettings(this.environment)
-        this.api = settings.environment.api
-        setApiKey()
-        log.info "Loaded configuration for the '${this.environment}' environment: ${this.api}"
+    // ---------------------------
+    // Instantiate a Configuration object with the default config
+    def private Configuration() {
+        loadDefaultConfig()
     }
 
-    def reload() {
+    // ---------------------------
+    // load the default config
+    def loadDefaultConfig() {
         setEnvironment()
         def settings = loadSettings(this.environment)
-        this.api = settings.environment.api
-        setApiKey()
-        log.info "Loaded configuration for the '${this.environment}' environment: ${this.api}"
+        applyConfig(settings)
     }
 
-    def reload(String environment) {
+    def loadEnvironment(String environment) {
         setEnvironment(environment)
-        def settings = loadSettings(environment)
-        def customSettings = loadSettings(environment)
-        settings = settings.merge(customSettings)
-        this.api = settings.environment.api
-        setApiKey()
-        log.info "Loaded configuration for the '${this.environment}' environment: ${this.api}"
+        def settings = loadSettings(this.environment)
+        applyConfig(settings)
     }
 
     def reload(URL customConfig) {
@@ -55,29 +49,40 @@ class Configuration {
         def settings = loadSettings(customConfig)
         def customSettings = loadSettings(customConfig)
         settings = settings.merge(customSettings)
-        this.api = settings.environment.api
-        setApiKey()
-        log.info "Loaded configuration for a custom environment: ${this.api}"
+        applyConfig(settings)
     }
 
     def reload(String environment, URL customConfig) {
         setEnvironment(environment)
-        def settings = loadSettings(environment)
-        def customSettings = loadSettings(environment, customConfig)
+        def settings = loadSettings(this.environment)
+        def customSettings = loadSettings(this.environment, customConfig)
         settings = settings.merge(customSettings)
+        applyConfig(settings)
+    }
+
+    def private applyConfig(ConfigObject settings) {
         this.api = settings.environment.api
         setApiKey()
         log.info "Loaded configuration for the '${this.environment}' environment: ${this.api}"
     }
 
+    // load default settings file
+    def loadSettings() {
+        return new ConfigSlurper().parse(this.getClass().getResource('/Settings.groovy').text)
+    }
+
+    // load settings for the specified environment
     def loadSettings(String environment) {
         return new ConfigSlurper(environment).parse(this.getClass().getResource('/Settings.groovy').text)
     }
 
+    // load settings for the specified environment using a custom settings file
     def loadSettings(String environment, URL customSettings) {
         return new ConfigSlurper(environment).parse(customSettings)
     }
 
+    // load settings exclusively from the specified file, must contain explicit environment config
+    // rather than use the ConfigSlurper environments capability
     def loadSettings(URL customSettings) {
         return new ConfigSlurper().parse(customSettings)
     }
@@ -88,5 +93,6 @@ class Configuration {
 
     def private setApiKey() {
         this.api.key = this.api.key ?: System.getenv('SIERRA_API_KEY')
+        this.api.key ?: { throw new ConfigurationException("API key not found, is the SIERRA_API_KEY env var set?") }
     }
 }
