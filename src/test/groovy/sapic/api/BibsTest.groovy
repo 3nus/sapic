@@ -1,7 +1,7 @@
 package sapic.api
 import groovy.json.JsonSlurper
 import gwebmock.MockAsyncHTTPBuilder
-import sapic.resources.Bib
+import sapic.entities.Bib
 
 import static org.hamcrest.CoreMatchers.instanceOf
 import static org.junit.Assert.assertThat
@@ -26,8 +26,8 @@ class GetBibsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_bibs_response.json' ).text)
         mock.stubApiGet(path: testPath, returns: response)
         mock.mockHTTP.use {
-            def bibs = bibs.get_bibs(limit: 5)
-            assertThat(bibs, instanceOf(sapic.resources.Bibs.class))
+            def bibs = bibs.bibs(limit: 5)
+            assertThat(bibs, instanceOf(sapic.entities.Bibs.class))
         }
     }
 
@@ -36,7 +36,7 @@ class GetBibsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_bibs_response.json' ).text)
         mock.stubApiGet(path: testPath, returns: response)
         mock.mockHTTP.use {
-            def bibs = bibs.get_bibs(limit: 5)
+            def bibs = bibs.bibs(limit: 5)
             bibs.each {
                 assertThat(it, instanceOf(Bib.class))
             }
@@ -48,7 +48,7 @@ class GetBibsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_bibs_response.json' ).text)
         mock.stubApiGet(path: testPath, returns: response)
         mock.mockHTTP.use {
-            def bibs = bibs.get_bibs(limit: 5)
+            def bibs = bibs.bibs(limit: 5)
             assertEquals(5, bibs.size())
         }
     }
@@ -58,7 +58,7 @@ class GetBibsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_bibs_response.json' ).text)
         mock.stubApiGet(path: testPath, returns: response)
         mock.mockHTTP.use {
-            def bibs = bibs.get_bibs(limit: 5)
+            def bibs = bibs.bibs(limit: 5)
         }
         mock.assertPathWasRequested()
     }

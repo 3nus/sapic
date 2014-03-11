@@ -1,7 +1,7 @@
 package sapic.api
 import groovy.json.JsonSlurper
 import gwebmock.MockAsyncHTTPBuilder
-import sapic.resources.Item
+import sapic.entities.Item
 
 import static org.hamcrest.CoreMatchers.instanceOf
 import static org.junit.Assert.assertThat
@@ -25,8 +25,8 @@ class ItemsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_items_response.json' ).text)
         stubApiGet(path: testPath, returns: response)
         mockHTTP.use {
-            def items = items.get_items(limit: 5)
-            assertThat(items, instanceOf(sapic.resources.Items.class))
+            def items = items.items(limit: 5)
+            assertThat(items, instanceOf(sapic.entities.Items.class))
         }
     }
 
@@ -35,7 +35,7 @@ class ItemsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_items_response.json' ).text)
         stubApiGet(path: testPath, returns: response)
         mockHTTP.use {
-            def items = items.get_items(limit: 5)
+            def items = items.items(limit: 5)
             items.each {
                 assertThat(it, instanceOf(Item.class))
             }
@@ -47,7 +47,7 @@ class ItemsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_items_response.json' ).text)
         stubApiGet(path: testPath, returns: response)
         mockHTTP.use {
-            def items = items.get_items(limit: 5)
+            def items = items.items(limit: 5)
             assert items.size() == 5
         }
     }
@@ -57,7 +57,7 @@ class ItemsTest extends GroovyTestCase {
         def response = new JsonSlurper().parseText(this.getClass().getResource( '/get_items_response.json' ).text)
         stubApiGet(path: testPath, returns: response)
         mockHTTP.use {
-            items.get_items(limit: 5)
+            items.items(limit: 5)
         }
         assertPathWasRequested(testPath)
     }

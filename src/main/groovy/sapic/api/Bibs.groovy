@@ -16,9 +16,9 @@ class Bibs extends APIBase {
     //      accepts: Map [limit: Integer limit, offset: Integer offset]
     //      returns: sapic.resource.Bibs object
     // Todo: implement search and filter parameters in APIBase
-    def get_bibs(Map args=[:]) {
+    def bibs(Map args=[:]) {
         def path = 'bibs'
-        return new sapic.resources.Bibs().fromResponse(SapiClient.instance.get(path: path, query: buildQueryParameters(args)))
+        return new sapic.entities.Bibs().fromResponse(SapiClient.instance.get(path: path, query: buildQueryParameters(args)))
     }
 
     /*

@@ -1,7 +1,7 @@
-package sapic.resources
+package sapic.entities
 
 // ---------------------------
-// a collection of resources, extending ArrayList
+// a collection of entities, extending ArrayList
 //
 class Collection extends ArrayList<Bib> {
 

@@ -17,9 +17,9 @@ class Items extends APIBase {
     //      accepts: Map [limit: Integer limit, offset: Integer offset]
     //      returns: sapic.resource.Items object
     // Todo: implement search and filter parameters in APIBase
-    def get_items(Map args=[:]) {
+    def items(Map args=[:]) {
         def path = 'items'
-        return new sapic.resources.Items().fromResponse(SapiClient.getInstance().get(path: path, query: buildQueryParameters(args)))
+        return new sapic.entities.Items().fromResponse(SapiClient.getInstance().get(path: path, query: buildQueryParameters(args)))
     }
 
     /*

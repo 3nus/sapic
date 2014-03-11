@@ -3,27 +3,30 @@ package sapic
 import groovy.util.logging.Log
 import groovyx.net.http.AsyncHTTPBuilder
 import groovyx.net.http.URIBuilder
+import sapic.config.Configuration
+import sapic.config.ConfigurationException
 
 import static groovyx.net.http.ContentType.JSON
 
-@Log(category='SapiClient')
-@Singleton(lazy = true)
+//@Log(category='sapic.SapiClient')
+@Log
 @Mixin([sapic.api.Bibs, sapic.api.Items])
+@Singleton(lazy=true)
 class SapiClient {
 
     // --------------
     // Initialization
     // --------------
+    def config = Configuration.instance
+    def httpClient = new AsyncHTTPBuilder(poolSize: 20, uri: this.config.api.host, contentType: JSON)
 
-    // todo: move these properties to params or to a config
-    def apiHTTPScheme = "http"
-    def apiHost = "http://sandbox.iii.com"
-    def apiPathRoot = "/iii/sierra-api"
-    def apiVersion = "v0.5"
-    def apiKey = System.getenv('SIERRA_API_KEY')
+    def loadConfig(URL customSettings) {
+        config = config.reload(customSettings)
+    }
 
-    // initialize the http client
-    def httpClient = new AsyncHTTPBuilder(poolSize: 20, uri: this.apiHost, contentType: JSON)
+    def loadConfig(String environment, URL customSettings) {
+        config = config.reload(environment, customSettings)
+    }
 
     // -------------
     // HTTP Requests
@@ -36,8 +39,8 @@ class SapiClient {
     def get(Map args=[:]) {
         def query = args.query
 
-        // if present, inject the apiKey into the query params
-        (this.apiKey) ? query.apiKey = this.apiKey : null
+        this.config.api.key ?: { throw new ConfigurationException("API key not found, is the SIERRA_API_KEY env var set?") }
+        //(this.apiKey) ? query.apiKey = this.apiKey : null
         def path = getPathForVerb(verb: 'GET', path: args.path, query: query)
 
         // make the http request
@@ -71,9 +74,18 @@ class SapiClient {
     //      accepts: Map [path: path, query:query]
     //      returns: URI object
     def buildURI(Map args=[:]) {
+        /*
         def uri = new URIBuilder(this.apiHost).with {
             scheme = this.apiHTTPScheme
             path = "${this.apiPathRoot}/${this.apiVersion}/${args.path}"
+            query = args.query
+            return it
+        }
+         */
+        def uri = new URIBuilder(this.config.api.host).with {
+            scheme = this.config.api.scheme
+            port = this.config.api.port
+            path = "${this.config.api.rootPath}/${this.config.api.version}/${args.path}"
             query = args.query
             return it
         }

@@ -17,13 +17,13 @@ Sample usage
 
 ```groovy
 import sapic.SapiClient
-import sapic.resources.Bib
-import sapic.resources.Bibs
+import sapic.entities.Bib
+import sapic.entities.Bibs
 
 def client = new SapiClient()
 def bibs = client.get_bibs(limit: 5)
-assert bibs.class == sapic.resources.Bibs
-assert bibs[0].class == sapic.resources.Bib
+assert bibs.class == sapic.entities.Bibs
+assert bibs[0].class == sapic.entities.Bib
 
 bibs[0].properties.each {
     println it
@@ -43,7 +43,7 @@ publishYear=1969
 deleted=false
 updatedDate=2009-07-06T08:30:13.000-07:00
 lang=null
-class=class sapic.resources.Bib
+class=class sapic.entities.Bib
 materialType={value=Book, code=a}
 country=New York (State)
 deletedDate=null
