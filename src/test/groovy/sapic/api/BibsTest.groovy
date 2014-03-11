@@ -6,7 +6,7 @@ import sapic.entities.Bib
 import static org.hamcrest.CoreMatchers.instanceOf
 import static org.junit.Assert.assertThat
 
-class GetBibsTest extends GroovyTestCase {
+class BibsTest extends GroovyTestCase {
 
     def bibs
     def mock

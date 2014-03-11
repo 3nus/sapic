@@ -3,7 +3,8 @@ package sapic
 import groovy.util.logging.Log
 import groovyx.net.http.AsyncHTTPBuilder
 import groovyx.net.http.URIBuilder
-import sapic.config.Configuration
+import sapic.config.CustomConfiguration
+import sapic.config.DefaultConfiguration
 
 import static groovyx.net.http.ContentType.JSON
 
@@ -15,32 +16,37 @@ class SapiClient {
     // --------------
     // Initialization
     // --------------
-    def config = Configuration.instance
-    def httpClient = new AsyncHTTPBuilder(poolSize: 20, uri: this.config.api.host, contentType: JSON)
+    def config = new DefaultConfiguration()
+    def httpClient = new AsyncHTTPBuilder(poolSize: 20, uri: this.config.host, contentType: JSON)
 
     // -------------
     // Configuration
     // -------------
+    def reload() {
+        config = new DefaultConfiguration()
+    }
 
     // ---------------------------
     // load specified environment configuration from default config
     //      accepts: String
     def loadConfig(String environment) {
-        config.loadEnvironment(environment)
+        config.loadConfig(environment)
     }
 
     // ---------------------------
     // load configuration from custom config file (as url)
     //      accepts: String
     def loadConfig(URL customSettings) {
-        config.reload(customSettings)
+        config = new CustomConfiguration()
+        config.loadConfig(customSettings)
     }
 
     // ---------------------------
     // load specified environment configuration from custom config file
     //      accepts: String
     def loadConfig(String environment, URL customSettings) {
-        config.reload(environment, customSettings)
+        config = new CustomConfiguration()
+        config.loadConfig(environment, customSettings)
     }
 
     // -------------
@@ -78,12 +84,12 @@ class SapiClient {
     def buildURI(Map args=[:]) {
 
         def queryParams = args.query
-        queryParams.apiKey = this.config.api.key
+        queryParams.apiKey = this.config.key
 
-        def uri = new URIBuilder(this.config.api.host).with {
-            scheme = this.config.api.scheme
-            port = this.config.api.port
-            path = "${this.config.api.rootPath}/${this.config.api.version}/${args.path}"
+        def uri = new URIBuilder(this.config.host).with {
+            scheme = this.config.scheme
+            port = this.config.port
+            path = "${this.config.rootPath}/${this.config.version}/${args.path}"
             query = queryParams
             return it
         }

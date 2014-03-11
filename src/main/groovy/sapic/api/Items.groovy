@@ -19,7 +19,7 @@ class Items extends APIBase {
     // Todo: implement search and filter parameters in APIBase
     def items(Map args=[:]) {
         def path = 'items'
-        return new sapic.entities.Items().fromResponse(SapiClient.getInstance().get(path: path, query: buildQueryParameters(args)))
+        return new sapic.entities.Items().fromResponse(SapiClient.instance.get(path: path, query: buildQueryParameters(args)))
     }
 
     /*

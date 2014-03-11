@@ -24,6 +24,7 @@ class SapiClientDefaultConfigTest extends GroovyTestCase {
     void setUp() {
         super.setUp()
         client = SapiClient.instance
+        client.reload()
     }
 
     void tearDown() {
@@ -31,19 +32,19 @@ class SapiClientDefaultConfigTest extends GroovyTestCase {
     }
 
     void testDefaultConfigHost() {
-        assertEquals('http://sandbox.iii.com', client.config.api.host)
+        assertEquals('http://sandbox.iii.com', client.config.host)
     }
 
     void testDefaultConfigRootPath() {
-        assertEquals('/iii/sierra-api', client.config.api.rootPath)
+        assertEquals('/iii/sierra-api', client.config.rootPath)
     }
 
     void testDefaultConfigVersion() {
-        assertEquals('v0.5', client.config.api.version)
+        assertEquals('v0.5', client.config.version)
     }
 
     void testDefaultConfigKey() {
-        assertEquals(System.getenv('SIERRA_API_KEY'), client.config.api.key)
+        assertEquals(System.getenv('SIERRA_API_KEY'), client.config.key)
     }
 
     void testGet() {
@@ -67,24 +68,22 @@ class SapiClientEnvConfigTest extends GroovyTestCase {
         client.loadConfig('local')
     }
 
-    void tearDown() {
-        client.config.loadDefaultConfig()
-    }
+    void tearDown() { }
 
     void testDefaultConfigHost() {
-        assertEquals('http://localhost', client.config.api.host)
+        assertEquals('http://localhost', client.config.host)
     }
 
     void testDefaultConfigRootPath() {
-        assertEquals('/iii/sierra-api', client.config.api.rootPath)
+        assertEquals('/iii/sierra-api', client.config.rootPath)
     }
 
     void testDefaultConfigVersion() {
-        assertEquals('v1', client.config.api.version)
+        assertEquals('v1', client.config.version)
     }
 
     void testDefaultConfigKey() {
-        assertEquals(System.getenv('SIERRA_API_KEY'), client.config.api.key)
+        assertEquals(System.getenv('SIERRA_API_KEY'), client.config.key)
     }
 
 }
@@ -99,24 +98,22 @@ class SapiClientCustomConfigTest extends GroovyTestCase {
         client.loadConfig(this.getClass().getResource('/CustomSettingsOverwrite.groovy'))
     }
 
-    void tearDown() {
-        client.config.loadDefaultConfig()
-    }
+    void tearDown() { }
 
     void testDefaultConfigHost() {
-        assertEquals('http://super-sierra-install.com', client.config.api.host)
+        assertEquals('http://super-sierra-install.com', client.config.host)
     }
 
     void testDefaultConfigRootPath() {
-        assertEquals('/iii/sierra-api', client.config.api.rootPath)
+        assertEquals('/iii/sierra-api', client.config.rootPath)
     }
 
     void testDefaultConfigVersion() {
-        assertEquals('v42', client.config.api.version)
+        assertEquals('v42', client.config.version)
     }
 
     void testDefaultConfigKey() {
-        assertEquals('sekrit', client.config.api.key)
+        assertEquals('sekrit', client.config.key)
     }
 
 }
@@ -131,24 +128,22 @@ class SapiClientEnvCustomConfigTest extends GroovyTestCase {
         client.loadConfig('superSierraInstall', this.getClass().getResource('/CustomSettings.groovy'))
     }
 
-    void tearDown() {
-        client.config.loadDefaultConfig()
-    }
+    void tearDown() { }
 
     void testDefaultConfigHost() {
-        assertEquals('http://super-sierra-install.com', client.config.api.host)
+        assertEquals('http://super-sierra-install.com', client.config.host)
     }
 
     void testDefaultConfigRootPath() {
-        assertEquals('/iii/sierra-api', client.config.api.rootPath)
+        assertEquals('/iii/sierra-api', client.config.rootPath)
     }
 
     void testDefaultConfigVersion() {
-        assertEquals('v42', client.config.api.version)
+        assertEquals('v42', client.config.version)
     }
 
     void testDefaultConfigKey() {
-        assertEquals('sekrit', client.config.api.key)
+        assertEquals('sekrit', client.config.key)
     }
 
 }
@@ -161,11 +156,10 @@ class SapiClientMixinsTest extends GroovyTestCase {
     void setUp() {
         super.setUp()
         client = SapiClient.instance
+        client.reload()
     }
 
-    void tearDown() {
-
-    }
+    void tearDown() { }
 
     void test_get_bibs_mixin() {
         def testPath = '/iii/sierra-api/v0.5/bibs'

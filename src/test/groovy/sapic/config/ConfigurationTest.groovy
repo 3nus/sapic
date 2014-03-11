@@ -3,13 +3,13 @@ package sapic.config
 /**
  * Created by aterrell on 3/10/14.
  */
-class ConfigurationDefaultsTest extends GroovyTestCase {
+class DefaultConfigurationTest extends GroovyTestCase {
 
     def config
 
     void setUp() {
         super.setUp()
-        config = new Configuration()
+        config = new DefaultConfiguration()
     }
 
     void tearDown() {
@@ -17,56 +17,55 @@ class ConfigurationDefaultsTest extends GroovyTestCase {
     }
 
     void testConfigurationApiHost() {
-        assertEquals('http://sandbox.iii.com', config.api.host)
+        assertEquals('http://sandbox.iii.com', config.host)
     }
 
     void testDefaultConfigurationApiRootPath() {
-        assertEquals('/iii/sierra-api', config.api.rootPath)
+        assertEquals('/iii/sierra-api', config.rootPath)
     }
 
     void testConfigurationApiVersion() {
-        assertEquals('v0.5', config.api.version)
+        assertEquals('v0.5', config.version)
     }
 
     void testConfigurationApiKey() {
-        assertEquals(System.getenv('SIERRA_API_KEY'), config.api.key)
+        assertEquals(System.getenv('SIERRA_API_KEY'), config.key)
     }
 
 }
 
-class ConfigurationWithEnvTest extends GroovyTestCase {
+class DefaultConfigurationConfigurationEnvTest extends GroovyTestCase {
 
     def config
 
     void setUp() {
         super.setUp()
-        config = new Configuration()
-        config.loadEnvironment('sandbox')
+        config = new DefaultConfiguration()
+        config.loadConfig('sandbox')
     }
 
     void tearDown() {
-        config.loadDefaultConfig()
     }
 
     void testConfigurationApiHostViaEnvironment() {
-        assertEquals('http://sandbox.iii.com', config.api.host)
+        assertEquals('http://sandbox.iii.com', config.host)
     }
 
     void testConfigurationApiKey() {
-        assertEquals(System.getenv('SIERRA_API_KEY'), config.api.key)
+        assertEquals(System.getenv('SIERRA_API_KEY'), config.key)
     }
 
 }
 
-class ConfigurationWithEnvAndCustomSettingsTest extends GroovyTestCase {
+class CustomConfigurationWithEnvTest extends GroovyTestCase {
 
     def config
 
     void setUp() {
         super.setUp()
         def customSettings = this.getClass().getResource('/CustomSettings.groovy')
-        config = new Configuration()
-        config.reload('superSierraInstall', customSettings)
+        config = new CustomConfiguration()
+        config.loadConfig('superSierraInstall', customSettings)
     }
 
     void tearDown() {
@@ -74,24 +73,24 @@ class ConfigurationWithEnvAndCustomSettingsTest extends GroovyTestCase {
     }
 
     void testConfigurationApiHostViaEnvironment() {
-        assertEquals('http://super-sierra-install.com', config.api.host)
+        assertEquals('http://super-sierra-install.com', config.host)
     }
 
     void testConfigurationApiKey() {
-        assertEquals('sekrit', config.api.key)
+        assertEquals('sekrit', config.key)
     }
 
 }
 
-class ConfigurationWithCustomSettingsTest extends GroovyTestCase {
+class CustomConfigurationTest extends GroovyTestCase {
 
     def config
 
     void setUp() {
         super.setUp()
         def customSettings = this.getClass().getResource('/CustomSettingsOverwrite.groovy')
-        config = new Configuration()
-        config.reload(customSettings)
+        config = new CustomConfiguration()
+        config.loadConfig(customSettings)
     }
 
     void tearDown() {
@@ -99,11 +98,11 @@ class ConfigurationWithCustomSettingsTest extends GroovyTestCase {
     }
 
     void testConfigurationApiHostViaEnvironment() {
-        assertEquals('http://super-sierra-install.com', config.api.host)
+        assertEquals('http://super-sierra-install.com', config.host)
     }
 
     void testConfigurationApiKey() {
-        assertEquals('sekrit', config.api.key)
+        assertEquals('sekrit', config.key)
     }
 
 }
