@@ -10,7 +10,35 @@ Using the AsyncHTTPBuilder() and its explicit JSON parsing capabilities, sapic w
 Configuring sapic
 -----------------
 
-Sapic currently has hardcoded parameters as properties on SapiClient(), which point the client at Innovative's sandbox environment. This will change soon, don't worry. The apiKey is set via an environmental variable (SIERRA_API_KEY) for now.
+Sapic contains an embedded default configuration file that facilitates testing against either the Innovative Sierra API sandbox, or against localhost. Using default configurations requires setting the apiKey via an environment variable:
+```bash
+export SIERRA_API_KEY=yourapikey
+```
+The sandbox can be hit with no configuration changes needed after grabbing a handle on the SapiClient singleton instance. To switch to localhost:
+```groovy
+import sapic.SapiClient
+def client = SapiClient.instance
+client.loadConfig('localhost')
+```
+
+Custom configurations, through which one can point a SapiClient instance at any Sierra API instance, can be instantiated in via config files placed on the file system.
+
+To load a custom configuration file:
+```groovy
+import sapic.SapiClient
+def client = SapiClient.instance
+client.loadConfig(new File('/CustomSettings.groovy').toURL())
+Mar 12, 2014 8:57:59 AM sun.reflect.NativeMethodAccessorImpl invoke0
+INFO: Loaded configuration for a custom environment: [scheme:http, host:http://super-sierra-install.com, port:80, rootPath:/iii/sierra-api, version:v42, key:sekrit]
+```
+
+In a configuration file which implements the ConfigSlurper environments pattern, one can also switch between multiple environments:
+```groovy
+import sapic.SapiClient
+def client = SapiClient.instance
+client.loadConfig('my_sierra_env', new File('/CustomSettings.groovy').toURL())
+client.loadConfig('my_other_sierra_env', new File('/CustomSettings.groovy').toURL())
+```
 
 Sample usage
 ------------
