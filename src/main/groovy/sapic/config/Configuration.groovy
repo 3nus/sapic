@@ -100,4 +100,16 @@ class CustomConfiguration extends DefaultConfiguration {
         return new ConfigSlurper().parse(customSettings)
     }
 
+    def applyConfig(ConfigObject settings) {
+        settings.environment.api.each { k, v ->
+            this."$k" = v
+        }
+        applyKey()
+        log.info "Loaded configuration for a custom environment: ${settings.environment.api}"
+    }
+
+    def applyEnvironment(String environment='custom') {
+        this.environment = environment ?: System.getenv('SIERRA_API_ENV')
+    }
+
 }
