@@ -5,7 +5,9 @@ Groovy Sierra API Client. Get it? S.API.C. Heh.
 
 Sapic is an example of interfacing with the Innovative's [Sierra](http://sierra.iii.com/) API using a groovy client library. The library is in its infancy, implementing only the basic get requests for /bibs and /items.
 
-Using the AsyncHTTPBuilder() and its explicit JSON parsing capabilities, sapic wraps the Sierra API with simple methods and marshalls the JSON responses into Groovy objects, which in turn will provide simple interactive methods for acting on the objects.
+It's a partial implementation at best at this point.
+
+Using [AsyncHTTPBuilder](http://groovy.codehaus.org/modules/http-builder/doc/async.html) and its explicit JSON parsing capabilities, sapic wraps the Sierra API with simple methods and marshalls the JSON responses into Groovy objects, which in turn will provide simple interactive methods for acting on the objects.
 
 Configuring sapic
 -----------------
