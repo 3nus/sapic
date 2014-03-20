@@ -17,6 +17,7 @@ export SIERRA_API_KEY=yourapikey
 The sandbox can be hit with no configuration changes needed after grabbing a handle on the SapiClient singleton instance. To switch to localhost:
 ```groovy
 import sapic.SapiClient
+
 def client = SapiClient.instance
 client.loadConfig('localhost')
 ```
@@ -26,15 +27,18 @@ Custom configurations, through which one can point a SapiClient instance at any 
 To load a custom configuration file:
 ```groovy
 import sapic.SapiClient
+
 def client = SapiClient.instance
 client.loadConfig(new File('/CustomSettings.groovy').toURL())
-Mar 12, 2014 8:57:59 AM sun.reflect.NativeMethodAccessorImpl invoke0
-INFO: Loaded configuration for a custom environment: [scheme:http, host:http://super-sierra-install.com, port:80, rootPath:/iii/sierra-api, version:v42, key:sekrit]
+
+>>> Mar 12, 2014 8:57:59 AM sun.reflect.NativeMethodAccessorImpl invoke0
+>>> INFO: Loaded configuration for a custom environment: [scheme:http, host:http://super-sierra-install.com, port:80, rootPath:/iii/sierra-api, version:v42, key:sekrit]
 ```
 
 In a configuration file which implements the ConfigSlurper environments pattern, one can also switch between multiple environments:
 ```groovy
 import sapic.SapiClient
+
 def client = SapiClient.instance
 client.loadConfig('my_sierra_env', new File('/CustomSettings.groovy').toURL())
 client.loadConfig('my_other_sierra_env', new File('/CustomSettings.groovy').toURL())
